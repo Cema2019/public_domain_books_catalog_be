@@ -38,7 +38,7 @@ A FastAPI backend for querying public domain books. Provides endpoints to fetch 
 
    ```
    python -m venv venv
-   source venv/Scripts/activate   # Windows PowerShell
+   .\venv\Scripts\activate   # Windows (PowerShell)
    source venv/bin/activate       # Linux / Mac
    ```
 

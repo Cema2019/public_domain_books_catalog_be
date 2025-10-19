@@ -12,14 +12,15 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 # Path to CA cert (local .env overrides, Render defaults to /etc/secrets/ca.pem)
 CA_CERT_PATH = os.getenv("CA_CERT_PATH", "/etc/secrets/ca.pem")
 
-# SQLAlchemy engine with SSL for PostgreSQL
+# Create SQLAlchemy engine with SSL
 engine = create_engine(
     DATABASE_URL,
     echo=False,  # Logs SQL queries (disable in production for speed)
     pool_pre_ping=True,  # Ensures dead connections are recycled
     connect_args={
-        "sslmode": "verify-full",
-        "sslrootcert": CA_CERT_PATH
+        "ssl": {
+            "ca": CA_CERT_PATH
+        }
     }
 )
 

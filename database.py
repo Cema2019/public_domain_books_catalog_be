@@ -18,9 +18,8 @@ engine = create_engine(
     echo=False,  # Logs SQL queries (disable in production for speed)
     pool_pre_ping=True,  # Ensures dead connections are recycled
     connect_args={
-        "ssl": {
-            "ca": CA_CERT_PATH
-        }
+        "sslmode": "verify-full",
+        "sslrootcert": CA_CERT_PATH
     }
 )
 

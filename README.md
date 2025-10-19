@@ -1,14 +1,18 @@
 # 📚 Public Domain Library API
 
-A FastAPI backend for querying public domain books. Provides endpoints to fetch books and search by title or author.
+Live at [https://public-domain-books.onrender.com](https://public-domain-books.onrender.com)
+
+A FastAPI-based REST API for searching public domain books, deployed on Render with a secure PostgreSQL database hosted on Aiven.io.
 
 ## ✨ Features
 
-- FastAPI-based REST API
-- PostgreSQL database (via SQLAlchemy)
-- CORS enabled for local frontend development
-- Health check endpoint
-- Search books by title or author (case-insensitive)
+- **FastAPI-based REST API**: High-performance, asynchronous API for book searches.
+- **ORM Integration**: SQLAlchemy with `psycopg2-binary` for robust database interactions.
+- **Validation**: Pydantic for type-safe request and response handling.
+- **CORS Support**: Enabled for integration with frontends (e.g., `sales-frontend`).
+- **Health Check Endpoint**: Monitor API status.
+- **Search Functionality**: Case-insensitive search by book title or author.
+- **Interactive Documentation**: Auto-generated Swagger UI and ReDoc.
 
 ## 🛠️ Tech Stack
 
@@ -17,6 +21,7 @@ A FastAPI backend for querying public domain books. Provides endpoints to fetch 
 - **ORM / Driver**: SQLAlchemy (uses psycopg2-binary)
 - **Validation**: Pydantic
 - **Server**: Uvicorn
+- **Deployment**: Render (Web Service with auto-scaling)
 - **Dependencies**: See `requirements.txt`
 
 ## ⚙️ Requirements
@@ -31,7 +36,7 @@ A FastAPI backend for querying public domain books. Provides endpoints to fetch 
 
    ```
    git clone https://github.com/Cema2019/public_domain_books_catalog_be.git
-   cd <repo-folder>
+   cd public_domain_books_catalog_be
    ```
 
 2. Create and activate a virtual environment:
@@ -52,15 +57,23 @@ A FastAPI backend for querying public domain books. Provides endpoints to fetch 
 
    ```
    ENV=development
-   DATABASE_URL=postgresql://user:password@host:port/dbname
+   DATABASE_URL=postgresql://user:password@host:port/dbname?sslmode=verify-full&sslrootcert=/path/to/ca.pem
+   CA_CERT_PATH=/path/to/ca.pem
    ```
 
 5. Run the FastAPI server:
    ```
    uvicorn main:app --reload
    ```
+## 🚀 Deployment
 
-## 🚀 Endpoints
+The API is deployed on Render with the following configuration:
+- **Platform**: Render Web Service with auto-scaling and zero-downtime deploys.
+- **Database**: Aiven.io PostgreSQL with SSL (`sslmode=verify-full`) using a CA certificate stored in Render Secret Files (`/etc/secrets/ca.pem`).
+- **Security**: Database credentials and CA certificate managed securely via Render Environment Variables and Secret Files.
+- **Monitoring**: Logs available in Render Dashboard for debugging and performance tracking.
+
+## 🛠️ Endpoints
 
 ### 💓 Health Check
 
@@ -78,20 +91,21 @@ A FastAPI backend for querying public domain books. Provides endpoints to fetch 
   Query books by title or author (case-insensitive).  
   Example:
   ```
-  curl "http://127.0.0.1:8000/books?search=Hobbes" | python -m json.tool
+  curl "https://public-domain-books.onrender.com/books?search=Hobbes" | python -m json.tool
   ```
 
 ## 🧭 API Documentation
 
 FastAPI includes two auto-generated documentation UIs:
 
-- **Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- **ReDoc:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+- **Swagger UI:** [https://public-domain-books.onrender.com/docs](https://public-domain-books.onrender.com/docs)
+- **ReDoc:** [https://public-domain-books.onrender.com/redoc](https://public-domain-books.onrender.com/redoc)
 
 ## 🗃️ Database
 
-- SQLAlchemy models are used to define the `books` table.
-- `Base.metadata.create_all(bind=engine)` will create missing tables without overwriting existing data.
+- **Schema**: SQLAlchemy models define the books table.
+- **Initialization**: `Base.metadata.create_all(bind=engine)` creates tables without overwriting existing data.
+- **Security**: SSL connections (`sslmode=verify-full`) with Aiven.io’s CA certificate ensure secure database access.
 
 ## 📝 Notes
 

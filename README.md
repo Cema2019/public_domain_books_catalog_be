@@ -1,6 +1,6 @@
 # 📚 Public Domain Library API
 
-Live at [https://public-domain-books.onrender.com](https://public-domain-books.onrender.com)
+Live at [https://public-domain-books-catalog-be.onrender.com](https://public-domain-books-catalog-be.onrender.com)
 
 A FastAPI-based REST API for searching public domain books, deployed on Render with a secure PostgreSQL database hosted on Aiven.io.
 
@@ -98,8 +98,8 @@ The API is deployed on Render with the following configuration:
 
 FastAPI includes two auto-generated documentation UIs:
 
-- **Swagger UI:** [https://public-domain-books.onrender.com/docs](https://public-domain-books.onrender.com/docs)
-- **ReDoc:** [https://public-domain-books.onrender.com/redoc](https://public-domain-books.onrender.com/redoc)
+- **Swagger UI:** [https://public-domain-books-catalog-be.onrender.com/docs](https://public-domain-books-catalog-be.onrender.com/docs)
+- **ReDoc:** [https://public-domain-books-catalog-be.onrender.com/redoc](https://public-domain-books-catalog-be.onrender.com/redoc)
 
 ## 🗃️ Database
 

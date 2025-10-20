@@ -5,6 +5,10 @@ from dotenv import load_dotenv
 import os, logging
 from database import SessionLocal, Base, engine
 import crud, schemas
+import httpx
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+import asyncio
 
 # ---------------- Config ---------------- #
 load_dotenv()
@@ -22,15 +26,37 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------- Logging ---------------- #
+# ---------------- Logging: show only Uvicorn logs, catch ping errors ---------------- #
 logging.basicConfig(level=logging.WARNING)
 app_logger = logging.getLogger('library_catalog')
+logging.getLogger('apscheduler').setLevel(logging.CRITICAL)  # Hide APScheduler logs
+logging.getLogger('httpx').setLevel(logging.CRITICAL)  # Hide httpx logs
 
-# ---------------- Startup Event ---------------- #
+# ---------------- Self-Ping Scheduler ---------------- #
+scheduler = AsyncIOScheduler()  # Global scheduler instance
+
+async def ping_self():
+    """Send an internal GET request to /health to keep Render app awake."""
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get("https://public-domain-books-catalog-be.onrender.com/health")
+            if response.status_code != 200:
+                app_logger.error(f"Self-ping failed with status {response.status_code}")
+        except Exception as e:
+            app_logger.error(f"Self-ping error: {str(e)}")
+
 @app.on_event("startup")
-def startup_event():
-    # Creates missing tables; does NOT overwrite existing tables
+async def startup_event():
     Base.metadata.create_all(bind=engine)
+    asyncio.create_task(ping_self())
+    scheduler.add_job(
+        ping_self,
+        trigger=IntervalTrigger(minutes=10),
+        id="self_ping",
+        max_instances=1,
+        replace_existing=True
+    )
+    scheduler.start()
 
 # ---------------- Health Check Endpoint ---------------- #
 @app.get("/health")

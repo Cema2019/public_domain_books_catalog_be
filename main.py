@@ -19,7 +19,7 @@ app = FastAPI(title="Public domain library")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",        # local dev frontend
+        "http://localhost:5173",        # local dev frontend
     ],
     allow_credentials=True,
     allow_methods=["*"],

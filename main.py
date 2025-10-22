@@ -2,13 +2,25 @@ from fastapi import FastAPI, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
-import os, logging
+import os, logging, asyncio, httpx
 from database import SessionLocal, Base, engine
 import crud, schemas
-import httpx
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-import asyncio
+
+# Base Page and the customization tools
+from fastapi_pagination import Page as BasePage, add_pagination
+from fastapi_pagination.customization import CustomizedPage, UseParamsFields
+from fastapi_pagination.ext.sqlalchemy import paginate
+
+# Re-define "Page" with our new explicit defaults.
+Page = CustomizedPage[
+    BasePage,
+    UseParamsFields(
+        size=Query(20, ge=1, description="Page size"), # Default size is 20
+        page=Query(1, ge=1, description="Page number"), # Default page is 1
+    ),
+]
 
 # ---------------- Config ---------------- #
 load_dotenv()
@@ -16,6 +28,7 @@ ENV = os.getenv("ENV", "development")       # default dev if not set
 
 app = FastAPI(title="Public domain library")
 
+# -------- CORS middleware -------- #
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -25,6 +38,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# -------- Initialize pagination globally -------- #
+add_pagination(app)
 
 # ---------------- Logging: show only Uvicorn logs, catch ping errors ---------------- #
 logging.basicConfig(level=logging.WARNING)
@@ -71,8 +87,20 @@ def get_db():
     finally:
         db.close()
 
-# ---------------- Libros Endpoints ---------------- #
-@app.get("/books", response_model=list[schemas.BookSchema])
-async def get_books(search: str = Query(None), db: Session = Depends(get_db)):
-    return crud.get_books(db, search)
+# ---------------- Books Endpoint ---------------- #
+@app.get("/books", response_model=Page[schemas.BookSchema]) 
+async def get_books(
+    search: str | None = Query(None, description="Search by title or author"),
+    db: Session = Depends(get_db)
+):
+    """
+    Fetch paginated books — 20 results per page by default.
+    Use ?page=2 for next results.
+    """
+    # 1. Build the query (doesn't need the db session)
+    stmt = crud.get_books_query(search)
+    
+    # 2. Execute the query (this needs the db session)
+    return paginate(db, stmt)
+
 

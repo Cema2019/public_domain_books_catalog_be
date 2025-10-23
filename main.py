@@ -32,7 +32,8 @@ app = FastAPI(title="Public domain library")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",        # local dev frontend
+        "http://localhost:5173", # local dev frontend
+        "https://public-domain-books-iota.vercel.app"        
     ],
     allow_credentials=True,
     allow_methods=["*"],

@@ -4,12 +4,23 @@ Live at [https://public-domain-books-catalog-be.onrender.com](https://public-dom
 
 A FastAPI-based REST API for searching public domain books, deployed on Render with a secure PostgreSQL database hosted on Aiven.io.
 
+---
+
+## 🚀 Frontend Application
+
+This backend serves a React + TypeScript frontend.
+
+* **Live Demo:** [**https://public-domain-books-iota.vercel.app**](https://public-domain-books-iota.vercel.app)
+* **Frontend Repository:** [**https://github.com/Cema2019/public_domain_books_catalog_fe**](https://github.com/Cema2019/public_domain_books_catalog_fe)
+
+---
+
 ## ✨ Features
 
 - **FastAPI-based REST API**: High-performance, asynchronous API for book searches.
 - **ORM Integration**: SQLAlchemy with `psycopg2-binary` for robust database interactions.
 - **Validation**: Pydantic for type-safe request and response handling.
-- **CORS Support**: Enabled for integration with frontends (e.g., `sales-frontend`).
+- **CORS Support**: Enabled for integration with the official frontend (`public-domain-books-iota.vercel.app`).
 - **Health Check Endpoint**: Monitor API status.
 - **Search Functionality**: Case-insensitive search by book title or author.
 - **Interactive Documentation**: Auto-generated Swagger UI and ReDoc.

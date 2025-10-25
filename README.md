@@ -1,6 +1,6 @@
 # 📚 Public Domain Library API
 
-Live at [https://public-domain-books-catalog-be.onrender.com](https://public-domain-books-catalog-be.onrender.com)
+Live at <a href="https://public-domain-books-catalog-be.onrender.com/docs" target="_blank" rel="noopener noreferrer">https://public-domain-books-catalog-be.onrender.com/docs</a>
 
 A FastAPI-based REST API for searching public domain books, deployed on Render with a secure PostgreSQL database hosted on Aiven.io.
 

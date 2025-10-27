@@ -56,7 +56,7 @@ async def ping_self():
     """Send an internal GET request to /health to keep Render app awake."""
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get("https://public-domain-books-catalog-be.onrender.com/health")
+            response = await client.get("https://public-domain-library-latest.onrender.com/health")
             if response.status_code != 200:
                 app_logger.error(f"Self-ping failed with status {response.status_code}")
         except Exception as e:

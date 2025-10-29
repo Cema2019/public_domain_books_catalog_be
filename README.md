@@ -2,7 +2,8 @@
 
 Live at <a href="https://public-domain-books-catalog-be.onrender.com/docs" target="_blank" rel="noopener noreferrer">https://public-domain-books-catalog-be.onrender.com/docs</a>
 
-A FastAPI-based REST API for searching public domain books, deployed on Render with a secure PostgreSQL database hosted on Aiven.io.
+A FastAPI-based REST API for searching public domain books, containerized with Docker and deployed on Render.
+The backend connects to a secure PostgreSQL database hosted on Aiven.io.
 
 ---
 
@@ -24,6 +25,8 @@ This backend serves a React + TypeScript frontend.
 - **Health Check Endpoint**: Monitor API status.
 - **Search Functionality**: Case-insensitive search by book title or author.
 - **Interactive Documentation**: Auto-generated Swagger UI and ReDoc.
+- **Containerized**: Packaged as a Docker image for consistent local and production deployments.
+- **CI/CD Automation**: Automatically built and deployed via GitHub Actions to Docker Hub and Render.
 
 ## 🛠️ Tech Stack
 
@@ -32,14 +35,17 @@ This backend serves a React + TypeScript frontend.
 - **ORM / Driver**: SQLAlchemy (uses psycopg2-binary)
 - **Validation**: Pydantic
 - **Server**: Uvicorn
+- **Containerization**: Docker
 - **Deployment**: Render (Web Service with auto-scaling)
 - **Dependencies**: See `requirements.txt`
+- **CI/CD**: GitHub Actions (build & push to Docker Hub)  
 
 ## ⚙️ Requirements
 
 - Python 3.10+
 - PostgreSQL
 - `pip` for installing dependencies
+- Docker (for containerized testing)
 
 ## 🔧 Setup
 
@@ -78,7 +84,13 @@ This backend serves a React + TypeScript frontend.
    ```
 ## 🚀 Deployment
 
-The API is deployed on Render with the following configuration:
+The API is deployed on **Render** using a Docker image automatically built and pushed to **Docker Hub**.
+
+**Deployment workflow overview:**  
+1. Code pushed to the `main` branch triggers a GitHub Actions workflow.  
+2. The workflow builds the Docker image from the Dockerfile.  
+3. The image is pushed to Docker Hub under the tag `carlosm1/public-domain-library:latest`.  
+4. Render automatically pulls the latest image and redeploys the API.
 - **Platform**: Render Web Service with auto-scaling and zero-downtime deploys.
 - **Database**: Aiven.io PostgreSQL with SSL (`sslmode=verify-full`) using a CA certificate stored in Render Secret Files (`/etc/secrets/ca.pem`).
 - **Security**: Database credentials and CA certificate managed securely via Render Environment Variables and Secret Files.
